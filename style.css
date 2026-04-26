@@ -1,6 +1,6 @@
 body {
   text-align: center;
-  font-family: Arial;
+  font-family: Arial, sans-serif;
   background: #0f172a;
   color: white;
 }
@@ -35,7 +35,6 @@ button {
   background: #22c55e;
   border: none;
   border-radius: 8px;
-  color: black;
 }
 
 .token {
