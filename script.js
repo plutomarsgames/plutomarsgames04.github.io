@@ -1,10 +1,10 @@
 const board = document.getElementById("board");
 const diceText = document.getElementById("dice");
 const turnText = document.getElementById("turn");
+const rollBtn = document.getElementById("rollBtn");
 
 let currentPlayer = "red";
 
-// path
 const path = [
   0,1,2,3,4,5,6,7,8,9,
   19,29,39,49,59,69,79,89,99,
@@ -12,7 +12,6 @@ const path = [
   80,70,60,50,40,30,20,10
 ];
 
-// 2 tokens per player
 let players = {
   red: [-1, -1],
   blue: [-1, -1]
@@ -34,6 +33,8 @@ function highlightPath() {
 }
 highlightPath();
 
+rollBtn.addEventListener("click", rollDice);
+
 function rollDice() {
   let dice = Math.floor(Math.random() * 6) + 1;
   diceText.innerText = "Dice: " + dice;
@@ -43,8 +44,6 @@ function rollDice() {
 
 function movePlayer(dice) {
   let tokens = players[currentPlayer];
-
-  // find movable token
   let moved = false;
 
   for (let i = 0; i < tokens.length; i++) {
@@ -68,10 +67,9 @@ function movePlayer(dice) {
   if (moved) {
     checkKill();
     updateBoard();
-    switchPlayer();
-  } else {
-    switchPlayer();
   }
+
+  switchPlayer();
 }
 
 function checkKill() {
