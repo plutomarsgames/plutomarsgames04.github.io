@@ -4,7 +4,7 @@ const turnText = document.getElementById("turn");
 
 let currentPlayer = "red";
 
-// Ludo path (fixed path)
+// path
 const path = [
   0,1,2,3,4,5,6,7,8,9,
   19,29,39,49,59,69,79,89,99,
@@ -12,9 +12,10 @@ const path = [
   80,70,60,50,40,30,20,10
 ];
 
-let positions = {
-  red: -1,
-  blue: -1
+// 2 tokens per player
+let players = {
+  red: [-1, -1],
+  blue: [-1, -1]
 };
 
 // create board
@@ -41,41 +42,63 @@ function rollDice() {
 }
 
 function movePlayer(dice) {
-  if (positions[currentPlayer] === -1) {
-    if (dice === 6) {
-      positions[currentPlayer] = 0;
-    }
-  } else {
-    positions[currentPlayer] += dice;
+  let tokens = players[currentPlayer];
 
-    if (positions[currentPlayer] >= path.length) {
-      alert(currentPlayer.toUpperCase() + " Wins!");
-      location.reload();
+  // find movable token
+  let moved = false;
+
+  for (let i = 0; i < tokens.length; i++) {
+    if (tokens[i] === -1 && dice === 6) {
+      tokens[i] = 0;
+      moved = true;
+      break;
+    } else if (tokens[i] >= 0) {
+      tokens[i] += dice;
+
+      if (tokens[i] >= path.length) {
+        alert(currentPlayer.toUpperCase() + " WINS!");
+        location.reload();
+      }
+
+      moved = true;
+      break;
     }
   }
 
-  updateBoard();
-  switchPlayer();
+  if (moved) {
+    checkKill();
+    updateBoard();
+    switchPlayer();
+  } else {
+    switchPlayer();
+  }
+}
+
+function checkKill() {
+  let opponent = currentPlayer === "red" ? "blue" : "red";
+
+  players[currentPlayer].forEach((pos, i) => {
+    players[opponent].forEach((opPos, j) => {
+      if (pos === opPos && pos !== -1) {
+        players[opponent][j] = -1;
+      }
+    });
+  });
 }
 
 function updateBoard() {
   let cells = document.querySelectorAll(".cell");
   cells.forEach(c => c.innerHTML = "");
 
-  for (let player in positions) {
-    let posIndex = positions[player];
-    if (posIndex >= 0 && posIndex < path.length) {
-      let cellIndex = path[posIndex];
-      cells[cellIndex].innerHTML += `
-        <div style="
-          width:18px;
-          height:18px;
-          border-radius:50%;
-          margin:auto;
-          background:${player};
-        "></div>
-      `;
-    }
+  for (let player in players) {
+    players[player].forEach(posIndex => {
+      if (posIndex >= 0 && posIndex < path.length) {
+        let cellIndex = path[posIndex];
+        let token = document.createElement("div");
+        token.classList.add("token", player);
+        cells[cellIndex].appendChild(token);
+      }
+    });
   }
 }
 
