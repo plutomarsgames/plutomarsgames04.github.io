@@ -5,6 +5,7 @@ const rollBtn = document.getElementById("rollBtn");
 
 let currentPlayer = "red";
 
+// PATH
 const path = [
   0,1,2,3,4,5,6,7,8,9,
   19,29,39,49,59,69,79,89,99,
@@ -12,29 +13,31 @@ const path = [
   80,70,60,50,40,30,20,10
 ];
 
+// TOKENS
 let players = {
   red: [-1, -1],
   blue: [-1, -1]
 };
 
-// create board
+// CREATE BOARD
 for (let i = 0; i < 100; i++) {
   let cell = document.createElement("div");
   cell.classList.add("cell");
   board.appendChild(cell);
 }
 
-// highlight path
+// 🔥 HIGHLIGHT PATH (FIXED)
 function highlightPath() {
   let cells = document.querySelectorAll(".cell");
   path.forEach(i => {
-    cells[i].style.background = "#334155";
+    cells[i].classList.add("path");
   });
 }
 highlightPath();
 
 rollBtn.addEventListener("click", rollDice);
 
+// 🎲 ROLL
 function rollDice() {
   let dice = Math.floor(Math.random() * 6) + 1;
   diceText.innerText = "Dice: " + dice;
@@ -42,6 +45,7 @@ function rollDice() {
   movePlayer(dice);
 }
 
+// MOVE
 function movePlayer(dice) {
   let tokens = players[currentPlayer];
   let moved = false;
@@ -72,10 +76,11 @@ function movePlayer(dice) {
   switchPlayer();
 }
 
+// 💥 KILL SYSTEM
 function checkKill() {
   let opponent = currentPlayer === "red" ? "blue" : "red";
 
-  players[currentPlayer].forEach((pos, i) => {
+  players[currentPlayer].forEach(pos => {
     players[opponent].forEach((opPos, j) => {
       if (pos === opPos && pos !== -1) {
         players[opponent][j] = -1;
@@ -84,6 +89,7 @@ function checkKill() {
   });
 }
 
+// 🎨 UPDATE BOARD (FIXED VISUAL)
 function updateBoard() {
   let cells = document.querySelectorAll(".cell");
   cells.forEach(c => c.innerHTML = "");
@@ -100,6 +106,7 @@ function updateBoard() {
   }
 }
 
+// 🔄 SWITCH
 function switchPlayer() {
   currentPlayer = currentPlayer === "red" ? "blue" : "red";
   turnText.innerText = "Turn: " + currentPlayer.toUpperCase();
